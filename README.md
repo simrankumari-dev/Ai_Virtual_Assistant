@@ -73,7 +73,7 @@ This project demonstrates full-stack development skills including authentication
 
 ## 📂 Project Structure
 
-```
+
 4.virtualAssistant/
 │
 ├── backend/
@@ -91,9 +91,9 @@ This project demonstrates full-stack development skills including authentication
 │   └── vite.config.js
 │
 └── README.md
-```
 
----
+
+
 
 ## ⚙️ Environment Variables
 
@@ -177,7 +177,7 @@ http://localhost:5174
 
 ## 👩‍💻 Author
 
-Your Name  
+Your Name :Simran Kumari
 LinkedIn: https://www.linkedin.com/in/simrankumari-tech/ 
 GitHub: https://github.com/simrankumari-dev  
 
