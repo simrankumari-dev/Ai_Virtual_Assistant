@@ -1,3 +1,26 @@
+##Application Screenshots
+
+## Sign Up Page
+![Signup](./screenshots/signup.jpeg)
+### 🔑 Sign In Page
+![Signin](./screenshots/signin.jpeg)
+
+### 🎨 Select Assistant Image
+![Select Assistant](./screenshots/select-assistant.jpeg)
+
+### 🖼 Upload Custom Assistant Image
+![Custom Image](./screenshots/custom-image.jpeg)
+
+### ✏️ Enter Custom Assistant Name
+![Assistant Name](./screenshots/assistant-name.jpeg)
+
+### 💬 Virtual Assistant Chat Interface
+![Chat Interface](./screenshots/chat-interface.jpeg)
+
+
+
+
+
 # 🤖 AI Virtual Assistant (MERN + Gemini API)
 
 An AI-powered Virtual Assistant built using the MERN stack with authentication, voice recognition, AI-generated responses, assistant customization, and smart command handling.
@@ -94,8 +117,8 @@ GEMINI_API_URL=your_gemini_api_url
 ### 1️⃣ Clone Repository
 
 ```
-git clone https://github.com/yourusername/ai-virtual-assistant.git
-cd ai-virtual-assistant
+git clone https://github.com/simrankumari-dev/Ai_Virtual_Assistant
+cd 4.virtualAssistant
 ```
 
 ---
@@ -155,8 +178,8 @@ http://localhost:5174
 ## 👩‍💻 Author
 
 Your Name  
-LinkedIn: https://linkedin.com/in/yourprofile  
-GitHub: https://github.com/yourusername  
+LinkedIn: https://www.linkedin.com/in/simrankumari-tech/ 
+GitHub: https://github.com/simrankumari-dev  
 
 ---
 
