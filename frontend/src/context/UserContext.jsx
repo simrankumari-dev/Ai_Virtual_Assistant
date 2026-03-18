@@ -14,6 +14,7 @@ function UserContext({children}) {
             console.log(result.data)
         } catch (error) {
             console.log(error)
+            return null
         }
     }
 
@@ -33,11 +34,11 @@ handleCurrentUser()
 serverUrl,userData,setUserData,backendImage,setBackendImage,frontendImage,setFrontendImage,selectedImage,setSelectedImage,getGeminiResponse
     }
   return (
-    <div>
+    
     <userDataContext.Provider value={value}>
       {children}
       </userDataContext.Provider>
-    </div>
+    
   )
 }
 

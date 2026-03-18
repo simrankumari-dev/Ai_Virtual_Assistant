@@ -1,60 +1,88 @@
 import axios from "axios"
-const geminiResponse=async (command,assistantName,userName)=>{
-try {
-    const apiUrl=process.env.GEMINI_API_URL
-    const prompt = `You are a virtual assistant named ${assistantName} created by ${userName}. 
-You are not Google. You will now behave like a voice-enabled assistant.
 
-Your task is to understand the user's natural language input and respond with a JSON object like this:
+let lastCallTime = 0
 
+const geminiResponse = async (command, assistantName, userName) => {
+  
+  const now = Date.now()
+  if (now - lastCallTime < 3000) {
+    console.log("🚫 Request blocked — too soon!")
+    return null
+  }
+  lastCallTime = now
+
+  try {
+    const result = await axios.post(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        model: "llama-3.1-8b-instant",
+        messages: [
+          {
+            role: "user",
+            content: `You are a virtual assistant named ${assistantName} created by ${userName}.
+
+STRICT RULES:
+- "type" field mein SIRF yeh values allowed hain, koi aur nahi:
+  "general", "google-search", "youtube-search", "youtube-play", 
+  "get-time", "get-date", "get-day", "get-month", 
+  "calculator-open", "instagram-open", "facebook-open", "weather-show", "open-url"
+- Koi naya type mat banana — sirf upar wali list se choose karo
+- Only respond with the JSON object, no extra text, no markdown, no backticks.
+- Respond in the SAME language the user spoke in — agar Hindi mein bola toh Hindi mein respond karo, English mein bola toh English mein
+- Agar Hinglish mein bola toh Hinglish mein respond karo
+
+Response format:
 {
-  "type": "general" | "google-search" | "youtube-search" | "youtube-play" | "get-time" | "get-date" | "get-day" | "get-month"|"calculator-open" | "instagram-open" |"facebook-open" |"weather-show"
-  ,
-  "userInput": "<original user input>" {only remove your name from userinput if exists} and agar kisi ne google ya youtube pe kuch search karne ko bola hai to userInput me only bo search baala text jaye,
-
-  "response": "<a short spoken response to read out loud to the user>"
+  "type": "sirf upar wali list mein se ek",
+  "userInput": "<original user input without assistant name>",
+  "response": "<short spoken response in same language as user>"
 }
-
-Instructions:
-- "type": determine the intent of the user.
-- "userinput": original sentence the user spoke.
-- "response": A short voice-friendly reply, e.g., "Sure, playing it now", "Here's what I found", "Today is Tuesday", etc.
 
 Type meanings:
-- "general": if it's a factual or informational question. aur agar koi aisa question puchta hai jiska answer tume pata hai usko bhi general ki category me rakho bas short answer dena
-- "google-search": if user wants to search something on Google .
-- "youtube-search": if user wants to search something on YouTube.
-- "youtube-play": if user wants to directly play a video or song.
-- "calculator-open": if user wants to  open a calculator .
-- "instagram-open": if user wants to  open instagram .
-- "facebook-open": if user wants to open facebook.
--"weather-show": if user wants to know weather
-- "get-time": if user asks for current time.
-- "get-date": if user asks for today's date.
-- "get-day": if user asks what day it is.
-- "get-month": if user asks for the current month.
+- "general": factual question jiska answer tumhe pata ho — short answer do
+- "google-search": Google pe kuch search karna ho
+- "youtube-search": YouTube pe search karna ho
+- "youtube-play": specific video/song play karna ho
+- "calculator-open": calculator kholna
+- "instagram-open": Instagram kholna
+- "facebook-open": Facebook kholna
+- "weather-show": weather dekhna
+- "get-time": current time
+- "get-date": aaj ki date
+- "get-day": aaj ka din
+- "get-month": current month
+- "open-url": jab user koi bhi website ya app open karna chahta ho jaise Spotify, Netflix, Amazon, WhatsApp, Twitter etc.
 
 Important:
-- Use ${userName} agar koi puche tume kisne banaya 
-- Only respond with the JSON object, nothing else.
+- "open google" = "google-search" type
+- "open youtube" = "youtube-search" type
+- "open instagram" = "instagram-open" type
+- "open facebook" = "facebook-open" type
+- Baaki koi bhi app/website = "open-url" type
+- Use ${userName} if asked who created you
 
+User input: ${command}`
+          }
+        ],
+        max_tokens: 200
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
 
-now your userInput- ${command}
-`;
+    let rawText = result.data.choices[0].message.content
+    rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim()
+    console.log("Groq Response:", rawText)
+    return rawText
 
-
-
-
-
-    const result=await axios.post(apiUrl,{
-    "contents": [{
-    "parts":[{"text": prompt}]
-    }]
-    })
-return result.data.candidates[0].content.parts[0].text
-} catch (error) {
-    console.log(error)
-}
+  } catch (error) {
+    console.log("Groq Error:", error.response?.data || error.message)
+    return null
+  }
 }
 
 export default geminiResponse
